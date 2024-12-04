@@ -13,7 +13,7 @@ public class DeckTest {
     void setUp() throws Exception{
         int ID = 1;
         int maxCards = 4;
-        Deck testDeck = new Deck(ID, maxCards);
+        testDeck = new Deck(ID, maxCards);
     }
     
     @Test
