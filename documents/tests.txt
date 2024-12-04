@@ -1,0 +1,36 @@
+Unit Tests
+
+Using Framework Junit in java
+
+Card class tests
+    - Create an instance of Card with number as argument
+    - getValue() returns an integer and said integer is the value specified
+
+Deck class tests
+    - Create an instance of Deck with ID, MaxCards (which is set to 4)
+    - getId() returns an integer and said integer is the ID specified
+    - Count() returns an integer and said integer is the maximum amount of cards the deck can hold specified in with MaxCards
+    - addCard() doesn’t return anything adds a card (specified as an argument) to the back of the queue
+    - takeCard() returns a Card from the front of the queue
+    - run() creates a thread of deck
+
+Pack class tests
+    - Create an instance of Pack with path to the text document of cards 
+    - CreateCards() method with path as an argument that directs to a text document with cards returns a Stack of Cards that is the cards specified in a text document
+    - GetCards() returns the cards specified in the text document directed by the path argument in the constructor
+
+Player class tests
+    - Create an instance of player with an ID, leftDeck, rightDeck as parameters
+    - run()
+    - chooseCardToRemove() chooses a card to remove based on what cards the player wants, returns a card
+    - add() method takes in a Card as a parameter and adds it to the hand
+    - checkWin() returns True if the the player has met the conditions to win
+    - getID() returns the player ID 
+    - GetHand() getHandReturns the players hand
+
+CardGame:
+    - Test createPlayers method returns the correct list of players
+    - Test setPlayers, getPlayers
+    - Test CreatePack method returns the correct Pack object
+    - Test Valid pack works for wrong packs and correct ones’s
+    - Test setpack and getpack works
