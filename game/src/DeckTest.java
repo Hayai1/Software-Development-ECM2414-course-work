@@ -10,25 +10,25 @@ public class DeckTest {
     private Deck testDeck;
 
     @Before
-    void setUp() throws Exception{
+    public void setUp() throws Exception{
         int ID = 1;
         int maxCards = 4;
         testDeck = new Deck(ID, maxCards);
     }
     
     @Test
-    void getIDTest(){
+    public void getIDTest(){
         assertEquals(1, testDeck.getID());
     }
 
     @Test
-    void countTest(){
+    public void countTest(){
         assertEquals(4,testDeck.count());
     }
 
 
     @Test
-    void addAndRemoveCardTest(){
+    public void addAndRemoveCardTest(){
         Card card1 = new Card(0);
         Card card2 = new Card(1);
         Card card3 = new Card(2);
