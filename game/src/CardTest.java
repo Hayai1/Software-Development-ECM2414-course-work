@@ -8,7 +8,7 @@ public class CardTest {
     @Test
     public void CheckingValueSetCardTest(){
         Card myCard = new Card(12);
-        assertEquals(12, myCard.GetValue());
+        assertEquals(12, myCard.getValue());
     }
 
     @Test

@@ -3,39 +3,58 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import org.junit.Test;
 import junit.*;
-
+import org.junit.Before;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.Stack;
 
 public class PackTest {
+    private String TestPath = "resources\\cardsTest.txt";
+    private Pack TestPack;
     @Test
-    public void TestCreateCards(){
-        ArrayList<Card> TestCards = new ArrayList<Card>();
-        String TestPath = "TestPath";
-        Pack TestPack = new Pack(TestPath);
-        TestPack.CreateCards(TestPath);
-        assertEquals(TestCards, TestPack.GetPack());
+    public void testCreatePack(){
+        // tests creating a pack object
+        try {
+            Pack TestPack = new Pack(TestPath);
+        } catch (FileNotFoundException e) {
+            System.out.println("path not found, try another! path you used: " + TestPath);
+        }
+    }
+    
+    @Test
+    public void testCreateCards(){
+        Stack<Card> TestCards = new Stack<Card>();
+        
+        for (int cardNum : new int[]{7,1,10,4,2,8,12,1}){
+            TestCards.add(new Card(cardNum));
+        }
+        System.out.println(TestCards);
+        try {
+            Pack TestPack = new Pack(TestPath);
+            TestPack.createCards(TestPath);
+            Stack<Card> ActualTestCards = TestPack.getPack();
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());//1
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());//12
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());//8
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());//2
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());//4
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());//10
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());//1
+            assertEquals(ActualTestCards.pop().getValue(), TestCards.pop().getValue());
+        } catch (FileNotFoundException e) {
+            System.out.println("path not found, try another! path you used: " + TestPath);
+        }
     }
 
     @Test
-    public void TestCreatePack(){
-        String TestPath = "TestPath";
-        Pack TestPack = new Pack(TestPath);
-    }
-
-    @Test
-    public void TestGetPack(){
-        ArrayList<Card> TestCards = new ArrayList<Card>();
-        String TestPath = "TestPath";
-        Pack TestPack = new Pack(TestPath);
-        TestPack.CreateCards(TestPath);
-        assertEquals(TestCards, TestPack.GetPack());
-    }
-
-    @Test
-    public void TestInvalidPath(){
+    public void testInvalidPath(){
         Exception exception = assertThrows(FileNotFoundException.class, () -> {
-            Pack invalidPack = new Pack("not a filename");
+            try{
+                Pack invalidPack = new Pack("not a filename");
+            }
+            catch(FileNotFoundException notFound){
+                System.out.println("exception thrown");
+                throw new FileNotFoundException();
+            }
         });
     }
 }

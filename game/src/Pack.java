@@ -1,24 +1,42 @@
-import java.util.List;
+import java.io.File;
+import java.util.Scanner;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.Stack;
 
-public class Pack {
+public class Pack 
+{
     
-    private List<Card> Pack = new ArrayList<Card>();
+    private Stack<Card> Pack = new Stack<Card>();
 
-    public Pack(String Path){
+    public Pack(String Path) throws FileNotFoundException{
         try {
-            CreateCards(Path);
+            createCards(Path);
         } catch (FileNotFoundException notFound) {
             throw new FileNotFoundException();
         }
     }
 
-    public void CreateCards(String Path){
+    public void createCards(String Path) throws FileNotFoundException{
+        int cardInt;
         // insert a filereader here i guess
+        // read file, try to make cards
+        // if card can't be made throw exception
+        try {
+            File cardFile = new File(Path);
+            Scanner cardReader = new Scanner(cardFile);
+            while (cardReader.hasNextInt()) {
+                cardInt = cardReader.nextInt();
+                Pack.add(new Card(cardInt));
+                // add some code here to turn string into in and then initialise a new card and then add to the stack
+            }
+            cardReader.close();
+            System.out.println(Pack);
+        } catch (FileNotFoundException notFound) {
+            throw new FileNotFoundException("File was unfound");
+        }
     }
 
-    public List<Card> GetPack(){
+    public Stack<Card> getPack(){
         return Pack;
     }
 }

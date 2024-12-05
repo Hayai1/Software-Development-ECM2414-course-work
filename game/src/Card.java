@@ -9,7 +9,7 @@ public class Card {
             }
         
     }
-    public int GetValue(){
+    public int getValue(){
         return this.value;
     }
 }
