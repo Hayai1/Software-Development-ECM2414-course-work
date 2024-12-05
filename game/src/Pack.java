@@ -39,4 +39,8 @@ public class Pack
     public Stack<Card> getPack(){
         return Pack;
     }
+
+    public Card getCard(){
+        return Pack.pop();
+    }
 }
