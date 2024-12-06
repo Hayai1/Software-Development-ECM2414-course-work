@@ -24,7 +24,8 @@ public class CardGameTest {
     }
     @Test
     public void createPackTest(){
-        var pack = testCardGame.createPack();
+        int playerCount = 2;
+        var pack = testCardGame.createPack(playerCount);
         assertTrue(pack instanceof Pack);
     }
     @Test

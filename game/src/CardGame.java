@@ -72,6 +72,8 @@ public class CardGame {
     }
     
     public static Pack createPack(int numberOfPlayers){
+      // at least part of this needs to be separated out into a method to check if a pack is valid
+      // and then the other part needs to create the pack
       Scanner scanner = new Scanner(System.in);
       System.out.println("Please enter location of pack to load");
       boolean validPath = false;
@@ -112,5 +114,9 @@ public class CardGame {
           deck.addCard(pack.getCard());
         }
       }
+    }
+
+    public Player[] getPlayers(){
+      return players;
     }
 }

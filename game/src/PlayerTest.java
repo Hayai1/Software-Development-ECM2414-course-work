@@ -21,10 +21,10 @@ public class PlayerTest {
     @Before
     public void CreateHand(){
         for (Card card : handExp) {
-            TestSubject.add(card);
+            TestSubject.addCard(card);
         }
         for(int i = 0; i < 4; i ++){
-            Winner.add(First);
+            Winner.addCard(First);
         }
     }
 
@@ -39,15 +39,15 @@ public class PlayerTest {
     }
 
     @Test
-    public void GetHandTest(){
-        assertEquals(handExp, TestSubject.GetHand());
+    public void getHandTest(){
+        assertEquals(handExp, TestSubject.getHand());
     }
 
     @Test
     public void addTest(){
         Card[] FirstHand = {First};
-        TestSubject.add(First);
-        assertEquals(FirstHand, TestSubject.GetHand);
+        TestSubject.addCard(First);
+        assertEquals(FirstHand, TestSubject.getHand());
     }
 
     @Test
