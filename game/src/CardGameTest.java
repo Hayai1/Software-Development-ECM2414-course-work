@@ -28,12 +28,12 @@ public class CardGameTest {
         assertTrue(pack instanceof Pack);
     }
     @Test
-    public void createPackTest(){  
+    public void ValidPackTest(){  
         assertTrue(testCardGame.validPack(new Pack("32CardPack.txt"), 4));
         assertTrue(testCardGame.validPack(new Pack("24CardPack.txt"), 3));
         assertTrue(testCardGame.validPack(new Pack("16CardPack.txt"), 2));
     }
-    public void getPlayersTest(){
+    public void getPackTest(){
         assertTrue(testCardGame.getPack() instanceof Pack);
     }
 }

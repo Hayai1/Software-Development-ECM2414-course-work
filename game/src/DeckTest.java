@@ -9,7 +9,7 @@ public class DeckTest {
 
     private Deck testDeck;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception{
         int ID = 1;
         int maxCards = 4;
