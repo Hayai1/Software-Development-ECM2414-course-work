@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 
 // may not actually need to be threaded after all
@@ -5,21 +7,22 @@ import java.util.Queue;
 public class Deck{
     int ID;
     int maxCards;
-    Queue<Card> Deck;
+    Queue<Card> deck;
     public Deck(int ID, int maxCards) {
         this.ID = ID;
         this.maxCards = maxCards;
+        deck = new LinkedList<Card>();
     }
     public int getID() {
         return ID; 
     }
     public int count() { 
-        return 0; 
+        return deck.size(); 
     }
     public void addCard(Card card) {
-        Deck.add(card);
+        deck.add(card);
     }
     public Card getCard() {
-        return Deck.remove(); 
+        return deck.remove(); 
     }
 }

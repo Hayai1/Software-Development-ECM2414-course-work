@@ -8,13 +8,15 @@ public class CardGame {
     
 
     public static void main(String[] args) {
+
       //need a list of players
       //need a list of decks
       //need a pack
       //need to ask user for number of players
-
-      players = createPlayers();
-      decks = createDecks(players.length);
+      int numberOfPlayers = getPlayerInput();
+      decks = createDecks(numberOfPlayers);
+      players = createPlayers(numberOfPlayers, decks);
+      
       pack = createPack(players.length);
       
       int count = pack.getPack().capacity();
@@ -35,7 +37,8 @@ public class CardGame {
       //need to run game
       //need to know when to exit?
     }
-    public static Player[] createPlayers(){
+
+    public static int getPlayerInput(){
       Scanner scanner = new Scanner(System.in);
       System.out.println("Please enter the number of players:");
       boolean validNumberOfPlayers = false;
@@ -55,13 +58,20 @@ public class CardGame {
             validNumberOfPlayers = true;
           }
       }
-      // can't create a player object without deck objects, so both should be created in the same method
-      // instead should validate playercount in another method and send that to a method to create both?
+      scanner.close();
+      return numberOfPlayers;
+    }
+    
+    public static Player[] createPlayers(int numberOfPlayers, Deck[] decks){
       players = new Player[numberOfPlayers];
       for (int i = 0; i < numberOfPlayers; i++){
-        players[i] = new Player(i);
+        if(i == 0){
+          players[i] = new Player(i, decks[i], decks[decks.length-1]);
+        }
+        else{
+          players[i] = new Player(i, decks[i], decks[i-1]);
+        }
       }
-      scanner.close();
       return players;
     }
 
@@ -73,7 +83,15 @@ public class CardGame {
       }
       return decks;
     }
-    
+
+    public static Boolean validPack(int numberOfPlayers, Pack pack){
+      Boolean valid = false;
+      if (pack.getPack().capacity() == numberOfPlayers*8){
+        valid = true;
+      }
+      return valid;
+    }
+
     public static Pack createPack(int numberOfPlayers){
       // at least part of this needs to be separated out into a method to check if a pack is valid
       // and then the other part needs to create the pack
@@ -82,9 +100,10 @@ public class CardGame {
       boolean validPath = false;
       while (!validPath){
         String packPath = scanner.nextLine();
+        System.out.println(packPath);
         try{
           pack = new Pack(packPath);
-          if (pack.getPack().capacity() != numberOfPlayers*8){
+          if (validPack(numberOfPlayers, pack)){
             System.out.println("pack should contain 8n cards where n is the number of players");
             continue;
           }
@@ -123,7 +142,7 @@ public class CardGame {
       return pack;
     }
 
-    public Player[] getPlayers(){
+    public static Player[] getPlayers(){
       return players;
     }
 }

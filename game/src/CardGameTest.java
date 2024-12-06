@@ -1,40 +1,54 @@
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-import org.junit.Before;
-
 public class CardGameTest {
-    private CardGame testCardGame; 
-    @Before
-    public void setUp() throws Exception{
-        testCardGame = new CardGame();
+
+    @Test
+    public void createDecksTest(){
+        Deck[] testdecks = CardGame.createDecks(4);
+        assertTrue(testdecks instanceof Deck[]);
+        assertTrue(testdecks.length == 4);
+
     }
 
     @Test
     public void createPlayersTest(){
-        assertTrue(testCardGame.createPlayers() instanceof Player[4]);
-        assertTrue(testCardGame.createPlayers().length == 4);
+        Deck[] testdecks = CardGame.createDecks(4);
+        Player[] testPlayers = CardGame.createPlayers(4, testdecks);
+        assertTrue(testPlayers instanceof Player[]);
+        assertTrue(testPlayers.length == 4);
     }
     @Test
     public void getPlayersTest(){
-        assertTrue(testCardGame.getPlayers() instanceof Player[4]);
-        assertTrue(testCardGame.getPlayers().length == 4);
+        Deck[] testdecks = CardGame.createDecks(4);
+        CardGame.createPlayers(4, testdecks);
+        assertTrue(CardGame.getPlayers() instanceof Player[]);
+        assertTrue(CardGame.getPlayers().length == 4);
     }
+
     @Test
     public void createPackTest(){
-        int playerCount = 2;
-        var pack = testCardGame.createPack(playerCount);
-        assertTrue(pack instanceof Pack);
+        assertTrue(CardGame.createPack(2) instanceof Pack);
     }
+    
     @Test
-    public void ValidPackTest(){  
-        assertTrue(testCardGame.validPack(new Pack("32CardPack.txt"), 4));
-        assertTrue(testCardGame.validPack(new Pack("24CardPack.txt"), 3));
-        assertTrue(testCardGame.validPack(new Pack("16CardPack.txt"), 2));
+    public void ValidPackTest(){
+        try{
+            Pack testPack1 = new Pack("32CardPack.txt");
+            Pack testPack2 = new Pack("24CardPack.txt");
+            assertTrue(CardGame.validPack(4, testPack1));
+            assertTrue(!CardGame.validPack(3, testPack1));
+            assertTrue(CardGame.validPack(3, testPack2));
+            assertTrue(!CardGame.validPack(4, testPack2));
+        }
+        catch (Exception e){
+            System.out.println("balls");
+        }
+        
+ 
     }
     public void getPackTest(){
-        assertTrue(testCardGame.getPack() instanceof Pack);
+        assertTrue(CardGame.getPack() instanceof Pack);
     }
 }
