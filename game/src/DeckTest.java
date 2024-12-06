@@ -8,6 +8,8 @@ import org.junit.Before;
 public class DeckTest {
 
     private Deck testDeck;
+    // this is having the same issue that pack was having yesterday where a lot of the test logic was happening in the wrong spots etc etc
+    // should be relatively easy to fix going via the same sorta things we did yesterday
 
     @BeforeEach
     public void setUp() throws Exception{

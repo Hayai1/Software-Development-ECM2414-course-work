@@ -1,6 +1,7 @@
 import java.util.Queue;
 
 // may not actually need to be threaded after all
+// will need to lock the getCard and addCard methods though
 public class Deck{
     int ID;
     int maxCards;

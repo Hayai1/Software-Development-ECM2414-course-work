@@ -66,6 +66,8 @@ public class Player implements Runnable{
             // exit game
             BroadCast();
         }
+        // need a method for exiting when another player wins
+        // need to write a load of stuff to a file
         }
     }
     }

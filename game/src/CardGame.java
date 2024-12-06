@@ -55,6 +55,8 @@ public class CardGame {
             validNumberOfPlayers = true;
           }
       }
+      // can't create a player object without deck objects, so both should be created in the same method
+      // instead should validate playercount in another method and send that to a method to create both?
       players = new Player[numberOfPlayers];
       for (int i = 0; i < numberOfPlayers; i++){
         players[i] = new Player(i);
@@ -64,6 +66,7 @@ public class CardGame {
     }
 
     public static Deck[] createDecks(int numberOfdecks){
+      // like createPlayer
       Deck[] decks = new Deck[numberOfdecks];
       for (int i=0; i > numberOfdecks; i++){
         decks[i] = new Deck(i, 4);
@@ -114,6 +117,10 @@ public class CardGame {
           deck.addCard(pack.getCard());
         }
       }
+    }
+
+    public static Pack getPack(){
+      return pack;
     }
 
     public Player[] getPlayers(){
