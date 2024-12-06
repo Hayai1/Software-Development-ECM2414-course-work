@@ -47,10 +47,19 @@ public class Player implements Runnable{
         }
     }
 
+    public void DrawNewCard(){
+        // need to make sure Decks get locked before this fucks things up
+        addCard(LDeck.getCard());
+    }
+
+    public void Discard(){
+        // also need to make sure this gets locked
+        RDeck.addCard(ChooseCardToRemove());
+    }
+
     @Override
     public void run(){
         while(CheckWin() == false){
-            ChooseCardToRemove();
             DrawNewCard();
         if(CheckWin() == true){
             // broadcast win to all other players

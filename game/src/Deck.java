@@ -1,7 +1,7 @@
 import java.util.Queue;
 
 // may not actually need to be threaded after all
-public class Deck implements Runnable {
+public class Deck{
     int ID;
     int maxCards;
     Queue<Card> Deck;
@@ -20,9 +20,5 @@ public class Deck implements Runnable {
     }
     public Card getCard() {
         return Deck.remove(); 
-    }
-    @Override
-    public void run(){
-
     }
 }

@@ -8,8 +8,8 @@ import org.junit.Test;
 public class PlayerTest {
     
     int Id = 1;
-    int LDeck = 0;
-    int RDeck = 2;
+    Deck LDeck = new Deck(0, 5);
+    Deck RDeck = new Deck(2, 5);
     Player TestSubject = new Player(Id,LDeck,RDeck);
     Player Winner = new Player(2,LDeck,RDeck);
     Card First = new Card(1);
