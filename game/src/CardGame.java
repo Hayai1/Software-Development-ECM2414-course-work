@@ -5,41 +5,51 @@ public class CardGame {
     private static Player[] players;
     private static Deck[] decks;
     private static Pack pack;
-    
+    private static StringBuffer playerWin; 
+    private static Scanner scanner = new Scanner(System.in);
+    private static Thread[] threads;
 
     public static void main(String[] args) {
-
-      //need a list of players
-      //need a list of decks
-      //need a pack
-      //need to ask user for number of players
+      playerWin = new StringBuffer("null");
       int numberOfPlayers = getPlayerInput();
+      threads = new Thread[numberOfPlayers];
+      
       decks = createDecks(numberOfPlayers);
+      System.out.println("decks made");
       players = createPlayers(numberOfPlayers, decks);
-      
+      System.out.println("players made");
       pack = createPack(players.length);
-      
-      int count = pack.getPack().capacity();
+      System.out.println("pack made");
+      int count = pack.getPack().size();
       dealCardsToPlayers(count);
       dealCardsToDecks(count);
-      
-      //deals out players
-      
-
-      //deals out decks
-      
-      //run all the players
-      //run all the decks
-      
-      //need to ask user for location of pack and repeat request until a valid pack is chosen
-      //need to create pack 
-      //need to deal cards out <-
-      //need to run game
-      //need to know when to exit?
+      scanner.close();
+      for (int i = 0; i< players.length; i++) {
+        Thread playerThread = new Thread(players[i]);
+        threads[i] = playerThread;
+        playerThread.start();
+        
+      }
+      try {
+        threads[0].join();
+      }
+      catch (InterruptedException e){
+        System.out.println("nice");
+      }
+      for (Thread thread : threads){
+        try{
+          thread.join();
+          System.out.println("ඞ3");
+        }
+        catch (InterruptedException e){
+          System.out.println("ඞ");
+        }
+      }
+      System.out.println("end of game");
     }
 
+
     public static int getPlayerInput(){
-      Scanner scanner = new Scanner(System.in);
       System.out.println("Please enter the number of players:");
       boolean validNumberOfPlayers = false;
       int numberOfPlayers = 0;
@@ -58,18 +68,18 @@ public class CardGame {
             validNumberOfPlayers = true;
           }
       }
-      scanner.close();
       return numberOfPlayers;
     }
     
     public static Player[] createPlayers(int numberOfPlayers, Deck[] decks){
       players = new Player[numberOfPlayers];
+      String[] finishedCheckingForWin = new String[numberOfPlayers];
       for (int i = 0; i < numberOfPlayers; i++){
         if(i == 0){
-          players[i] = new Player(i, decks[i], decks[decks.length-1]);
+          players[i] = new Player(i, decks[i], decks[decks.length-1],playerWin,finishedCheckingForWin);
         }
         else{
-          players[i] = new Player(i, decks[i], decks[i-1]);
+          players[i] = new Player(i, decks[i], decks[i-1],playerWin,finishedCheckingForWin);
         }
       }
       return players;
@@ -78,7 +88,7 @@ public class CardGame {
     public static Deck[] createDecks(int numberOfdecks){
       // like createPlayer
       Deck[] decks = new Deck[numberOfdecks];
-      for (int i=0; i > numberOfdecks; i++){
+      for (int i=0; i < numberOfdecks; i++){
         decks[i] = new Deck(i, 4);
       }
       return decks;
@@ -95,12 +105,11 @@ public class CardGame {
     public static Pack createPack(int numberOfPlayers){
       // at least part of this needs to be separated out into a method to check if a pack is valid
       // and then the other part needs to create the pack
-      Scanner scanner = new Scanner(System.in);
       System.out.println("Please enter location of pack to load");
       boolean validPath = false;
+      String packPath = "";
       while (!validPath){
-        String packPath = scanner.nextLine();
-        System.out.println(packPath);
+        packPath = scanner.nextLine();
         try{
           pack = new Pack(packPath);
           if (validPack(numberOfPlayers, pack)){
@@ -114,7 +123,6 @@ public class CardGame {
           continue;
         }
       }
-      scanner.close();
       return pack;
     }
 
@@ -122,7 +130,7 @@ public class CardGame {
 
     public static void dealCardsToPlayers(int count){
       
-      for (int i=0; i < count/4; i++){
+      for (int i=0; i < count/8; i++){
         for (Player player : players) {
           player.addCard(pack.getCard());
         } 
@@ -131,7 +139,7 @@ public class CardGame {
 
     
     public static void dealCardsToDecks(int count){
-      for (int i=0; i < count/4; i++){
+      for (int i=0; i < count/8; i++){
         for (Deck deck : decks) {
           deck.addCard(pack.getCard());
         }

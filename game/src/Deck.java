@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -19,10 +18,22 @@ public class Deck{
     public int count() { 
         return deck.size(); 
     }
-    public void addCard(Card card) {
+    public synchronized void addCard(Card card) {
+        while (deck.size() == maxCards){
+            try {
+                wait();
+            }
+            catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
+        }
         deck.add(card);
+        notifyAll();
     }
-    public Card getCard() {
-        return deck.remove(); 
+    public synchronized Card getCard() {
+        notifyAll();
+        return deck.remove();
     }
+
 }

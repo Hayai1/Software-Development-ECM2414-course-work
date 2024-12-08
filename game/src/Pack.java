@@ -27,10 +27,8 @@ public class Pack
             while (cardReader.hasNextInt()) {
                 cardInt = cardReader.nextInt();
                 Pack.add(new Card(cardInt));
-                // add some code here to turn string into int and then initialise a new card and then add to the stack
             }
             cardReader.close();
-            System.out.println(Pack);
         } catch (FileNotFoundException notFound) {
             throw new FileNotFoundException("File was unfound");
         }

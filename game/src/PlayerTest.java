@@ -1,17 +1,15 @@
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 
 public class PlayerTest {
-    
+    StringBuffer playerWin = null;
     int Id = 1;
     Deck LDeck = new Deck(0, 5);
     Deck RDeck = new Deck(2, 5);
-    Player TestSubject = new Player(Id,LDeck,RDeck);
-    Player Winner = new Player(2,LDeck,RDeck);
+    Player TestSubject = new Player(Id,LDeck,RDeck,playerWin);
+    Player Winner = new Player(2,LDeck,RDeck,playerWin);
     Card First = new Card(1);
     Card Second = new Card(2);
     Card Third = new Card(3);
@@ -30,7 +28,7 @@ public class PlayerTest {
 
     @Test
     public void CreatePlayer(){
-        Player myPlayerTest = new Player(Id,LDeck,RDeck);
+        Player myPlayerTest = new Player(Id,LDeck,RDeck,playerWin);
     }
 
     @Test
@@ -47,7 +45,7 @@ public class PlayerTest {
     public void addTest(){
         Card[] FirstHand = {First};
         TestSubject.addCard(First);
-        assertEquals(FirstHand, TestSubject.getHand());
+        assertEquals(FirstHand[0], TestSubject.getHand()[0]);
     }
 
     @Test
