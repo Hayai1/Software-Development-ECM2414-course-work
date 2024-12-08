@@ -1,24 +1,25 @@
-import javax.naming.ldap.Rdn;
-import java.io.File;  // Import the File class
-import java.io.IOException;  // Import the IOException class to handle errors
+import java.io.File;
+import java.io.FileOutputStream;  // Import the File class
+import java.io.FileWriter;  // Import the IOException class to handle errors
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.io.FileWriter;
-import java.io.FileOutputStream;
-import java.time.LocalTime;
+import java.util.Arrays;
 public class Player implements Runnable{ 
     private int ID;
     Deck LDeck;
     Deck RDeck;
     StringBuffer playerWin;
     String[] finishedCheckingForWin;
+    boolean[] flag; 
     private Card[] hand = new Card[4];
     
-    public Player(int ID, Deck LDeck, Deck RDeck, StringBuffer playerWin,String[] finishedCheckingForWin) { 
+    public Player(int ID, Deck LDeck, Deck RDeck, StringBuffer playerWin, String[] finishedCheckingForWin, boolean[] flag) { 
         this.ID = ID; 
         this.LDeck = LDeck;
         this.RDeck = RDeck;
         this.playerWin = playerWin;
         this.finishedCheckingForWin = finishedCheckingForWin;
+        this.flag = flag;
     }
 
     public void addCard(Card card) {
@@ -81,7 +82,7 @@ public class Player implements Runnable{
                 System.out.println("File created: " + myObj.getName());
             } 
             else {
-                System.out.println("File already exists.");
+                //System.out.println("File already exists.");
                 FileWriter fileWriter = new FileWriter("resources\\player" + ID + ".txt");
                 fileWriter.write("");
 
@@ -131,55 +132,99 @@ public class Player implements Runnable{
         this.playerWin.append("player " + ID);
     }
 
+    
+    
     @Override
-    public synchronized void run(){
+    public void run() {
         CreateFile();
         Card cardToRemove;
         Card newCard;
-        Boolean won = false;
-        writeToFile("player " + ID + " inital hand is " + hand[0].getValue() + " " + hand[1].getValue() + " " + hand[2].getValue() + " " + hand[3].getValue());
-        while(CheckWin() == false){
-            newCard = DrawNewCard();
-            writeToFile("player " + ID + " draws a " + newCard.getValue() + " from deck " + RDeck.getID());
+        boolean won = false;
+    
+        // Log the initial hand
+        writeToFile("Player " + ID + " initial hand: " 
+                    + hand[0].getValue() + " " + hand[1].getValue() + " "
+                    + hand[2].getValue() + " " + hand[3].getValue());
+    
+        while (!won) {
+            // Draw a new card and discard one
+            synchronized (LDeck) {
+                newCard = DrawNewCard();
+            }
+            writeToFile("Player " + ID + " draws a " + newCard.getValue() 
+                        + " from deck " + LDeck.getID());
+    
             cardToRemove = ChooseCardToRemove();
-            writeToFile("player " + ID + " discards a " + cardToRemove.getValue() + " to deck " + LDeck.getID());
-            // threads are getting fucked trying to remove from deck
-            Discard(cardToRemove);
+            synchronized (RDeck) {
+                Discard(cardToRemove);
+            }
+            writeToFile("Player " + ID + " discards a " + cardToRemove.getValue() 
+                        + " to deck " + RDeck.getID());
             addCard(newCard);
+    
+            // Check for a win
             won = CheckWin();
-            finishedCheckingForWin[ID] = null;
-            if (won){
-                BroadCast();
-                writeToFile("player " + ID + " wins");
-                writeToFile("player " + ID + " exits");
-                writeToFile("player " + ID + " final hand " + hand[0].getValue() + " " + hand[1].getValue() + " " + hand[2].getValue() + " " + hand[3].getValue());
-                finishedCheckingForWin();
-                System.out.println("player + " + ID + "has exited");
-                finishedCheckingForWin[ID] = null;
+            if (won) {
+                synchronized (flag) {
+                    // Append the winner and set the flag
+                    playerWin.append("Player " + ID);
+                    flag[0] = true; // Signal all threads that the game is over
+                    flag.notifyAll(); // Wake all threads
+                }
+                writeToFile("Player " + ID + " wins!");
+                writeToFile("Player " + ID + " exits");
+                writeToFile("Player " + ID + " final hand: " 
+                            + hand[0].getValue() + " " + hand[1].getValue() + " "
+                            + hand[2].getValue() + " " + hand[3].getValue());
+                System.out.println("Player " + ID + " has exited");
                 break;
-                }
-            else{
-                finishedCheckingForWin();
-                if (allCheckedWin() == false){
-                    try {
-                        wait(10);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }                
-                }
-                else{
-                    notifyAll();
+            } else {
+                synchronized (flag) {
+                    // Mark that this player has checked their win status
+                    finishedCheckingForWin[ID] = Integer.toString(ID);
+    
+                    // If all players have reached the hold point, proceed
+                    if (allPlayersReachedHoldPoint()) {
+                        flag[0] = false; // Reset flag for the next round
+                        flag.notifyAll(); // Wake all threads
+                    } else {
+                        // Wait until all players have reached the hold point or the game ends
+                        while (!flag[0] && playerWin.length() == 0) {
+                            try {
+                                flag.wait();
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    }
                 }
             }
-            // this if statement is busted but if it wasn't this would work :D
-            //LocalTime myObj = LocalTime.now();
-            System.out.println(ID);
-            if(!playerWin.toString().equals("null")){
-                System.out.println("player + " + ID + "has exited");
-                finishedCheckingForWin[ID] = null;
+    
+            // If another player has won, exit
+            if (!playerWin.toString().equals("null")) {
+                writeToFile("Player " + ID + " notices the game is finished. Winner: " + playerWin.toString());
+                System.out.println("Player " + ID + " has exited");
                 break;
             }
-        }    
+        }
+    
+        // Ensure all threads log game completion
+        if (!won && !playerWin.toString().equals("null")) {
+            writeToFile("Player " + ID + " exits because the game is finished. Winner: " + playerWin.toString());
+        }
+    }
+    
+    /**
+     * Helper method to check if all players have reached the hold point.
+     */
+    private boolean allPlayersReachedHoldPoint() {
+        for (String status : finishedCheckingForWin) {
+            if (status == null) {
+                return false;
+            }
+        }
+        // Reset the array for the next round
+        Arrays.fill(finishedCheckingForWin, null);
+        return true;
     }
 }
