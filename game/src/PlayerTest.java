@@ -4,12 +4,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PlayerTest {
+    String[] finishedCheckingForWin;
+    boolean[] flag; 
     StringBuffer playerWin = null;
     int Id = 1;
+    Card testCard = new Card(2);
     Deck LDeck = new Deck(0, 5);
     Deck RDeck = new Deck(2, 5);
-    Player TestSubject = new Player(Id,LDeck,RDeck,playerWin);
-    Player Winner = new Player(2,LDeck,RDeck,playerWin);
+    Player TestSubject = new Player(Id, LDeck, RDeck, playerWin, finishedCheckingForWin, flag);
+    Player Winner = new Player(Id, LDeck, RDeck, playerWin, finishedCheckingForWin, flag);
     Card First = new Card(1);
     Card Second = new Card(2);
     Card Third = new Card(3);
@@ -28,7 +31,7 @@ public class PlayerTest {
 
     @Test
     public void CreatePlayer(){
-        Player myPlayerTest = new Player(Id,LDeck,RDeck,playerWin);
+        Player myPlayerTest = new Player(Id, LDeck, RDeck, playerWin, finishedCheckingForWin, flag);
     }
 
     @Test

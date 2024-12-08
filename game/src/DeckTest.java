@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
+import java.util.Queue;
+
 import org.junit.Test;
 
 
@@ -7,8 +9,6 @@ import org.junit.Test;
 public class DeckTest {
 
     private Deck testDeck;
-    // this is having the same issue that pack was having yesterday where a lot of the test logic was happening in the wrong spots etc etc
-    // should be relatively easy to fix going via the same sorta things we did yesterday
     
     @Test
     public void getIDTest(){
@@ -56,4 +56,20 @@ public class DeckTest {
         assertEquals(4,testDeck.count());
     }
     
+    @Test
+    public void getDeckTest(){
+        testDeck = new Deck(1, 4);
+        Card card1 = new Card(0);
+        Card card2 = new Card(1);
+        Card card3 = new Card(2);
+        Card card4 = new Card(3);
+        testDeck.addCard(card1);
+        testDeck.addCard(card2);
+        testDeck.addCard(card3);
+        testDeck.addCard(card4);
+        assertEquals(card1, testDeck.getDeck().remove());
+        assertEquals(card2, testDeck.getDeck().remove());
+        assertEquals(card3, testDeck.getDeck().remove());
+        assertEquals(card4, testDeck.getDeck().remove());
+    }
 }

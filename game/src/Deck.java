@@ -35,5 +35,8 @@ public class Deck{
         notifyAll();
         return deck.remove();
     }
+    public Queue<Card> getDeck(){
+        return deck;
+    }
 
 }

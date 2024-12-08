@@ -1,5 +1,8 @@
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import java.util.concurrent.CyclicBarrier;
 
 public class CardGame {
     private static Player[] players;
@@ -10,7 +13,7 @@ public class CardGame {
     private static Thread[] threads;
 
     public static void main(String[] args) {
-      playerWin = new StringBuffer("null");
+      playerWin = new StringBuffer("player ");
       int numberOfPlayers = getPlayerInput();
       threads = new Thread[numberOfPlayers];
       
@@ -29,9 +32,10 @@ public class CardGame {
         playerThread.start();
         
       }
-      
-      
-      System.out.println("end of game");
+      // cards being dealt weird
+      // change the format of the final outputs to match the spec
+      // write deck files
+    
     }
 
 
@@ -59,14 +63,14 @@ public class CardGame {
     
     public static Player[] createPlayers(int numberOfPlayers, Deck[] decks){
       players = new Player[numberOfPlayers];
-      String[] finishedCheckingForWin = new String[numberOfPlayers];
-      boolean[] flag = new boolean[1];
+      CyclicBarrier barrier = new CyclicBarrier(numberOfPlayers);
+        
       for (int i = 0; i < numberOfPlayers; i++){
         if(i == 0){
-          players[i] = new Player(i, decks[i], decks[decks.length-1],playerWin,finishedCheckingForWin,flag);
+          players[i] = new Player(i + 1, decks[i], decks[decks.length-1],playerWin,barrier);
         }
         else{
-          players[i] = new Player(i, decks[i], decks[i-1],playerWin,finishedCheckingForWin,flag);
+          players[i] = new Player(i + 1, decks[i], decks[i-1],playerWin,barrier);
         }
       }
       return players;
@@ -76,7 +80,7 @@ public class CardGame {
       // like createPlayer
       Deck[] decks = new Deck[numberOfdecks];
       for (int i=0; i < numberOfdecks; i++){
-        decks[i] = new Deck(i, 5);
+        decks[i] = new Deck(i + 1, 5);
       }
       return decks;
     }
@@ -117,7 +121,7 @@ public class CardGame {
 
     public static void dealCardsToPlayers(int count){
       
-      for (int i=0; i < count/8; i++){
+      for (int i=0; i < 4; i++){
         for (Player player : players) {
           player.addCard(pack.getCard());
         } 
@@ -126,7 +130,7 @@ public class CardGame {
 
     
     public static void dealCardsToDecks(int count){
-      for (int i=0; i < count/8; i++){
+      for (int i=0; i < 4; i++){
         for (Deck deck : decks) {
           deck.addCard(pack.getCard());
         }
