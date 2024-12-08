@@ -1,5 +1,8 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.concurrent.CyclicBarrier;
@@ -12,7 +15,7 @@ public class CardGame {
     private static Scanner scanner = new Scanner(System.in);
     private static Thread[] threads;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
       playerWin = new StringBuffer("player ");
       int numberOfPlayers = getPlayerInput();
       threads = new Thread[numberOfPlayers];
@@ -27,16 +30,45 @@ public class CardGame {
       dealCardsToPlayers(count);
       dealCardsToDecks(count);
       scanner.close();
+      
       for (int i = 0; i< players.length; i++) {
         Thread playerThread = new Thread(players[i]);
         playerThread.start();
-        
+        threads[i] = playerThread;
       }
-      // cards being dealt weird
-      // change the format of the final outputs to match the spec
-      // write deck files
-    
+      for (Thread player : threads){
+        player.join();
+      }
+      writeDecksToFiles();
     }
+
+    public static void writeDecksToFiles(){
+      for (Deck deck : decks){
+        try {
+            File myObj = new File("resources\\deck" + deck.ID + "_output.txt");
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            } 
+            else {
+                //System.out.println("File already exists.");
+                FileWriter fileWriter = new FileWriter("resources\\deck" + deck.ID + "_output.txt");
+                fileWriter.write("");
+            }
+        try (FileOutputStream fos = new FileOutputStream("resources\\deck" + deck.ID + "_output.txt", true)) {
+            String text = "deck" + deck.ID + " contents: " + deck.getCard().getValue() + " " + deck.getCard().getValue() + " " + deck.getCard().getValue() + " " + deck.getCard().getValue();  
+            fos.write(text.getBytes(StandardCharsets.UTF_8));
+            
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+            
+        } 
+        catch (IOException e) {
+            System.out.println("An error occurred.");
+        }
+      }
+  }
 
 
     public static int getPlayerInput(){

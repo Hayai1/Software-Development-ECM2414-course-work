@@ -15,7 +15,6 @@ public class Player implements Runnable{
     public Deck RDeckBack;
     public Card[] handBack = new Card[4];
     public final CyclicBarrier barrier;
-    int turn;
     StringBuffer playerWin;
     private Card[] hand = new Card[4];
     
@@ -24,9 +23,6 @@ public class Player implements Runnable{
         this.LDeck = LDeck;
         this.RDeck = RDeck;
         this.playerWin = playerWin;
-        this.LDeckBack = LDeck;
-        this.RDeckBack = RDeck;
-        this.handBack = hand;
         this.barrier = barrier;
     }
 
@@ -85,13 +81,13 @@ public class Player implements Runnable{
     public void CreateFile() {
         // should clear the current files if they exist
         try {
-            File myObj = new File("resources\\player" + ID + ".txt");
+            File myObj = new File("resources\\player" + ID + "_output.txt");
             if (myObj.createNewFile()) {
                 System.out.println("File created: " + myObj.getName());
             } 
             else {
                 //System.out.println("File already exists.");
-                FileWriter fileWriter = new FileWriter("resources\\player" + ID + ".txt");
+                FileWriter fileWriter = new FileWriter("resources\\player" + ID + "_output.txt");
                 fileWriter.write("");
 
             }
@@ -103,7 +99,7 @@ public class Player implements Runnable{
 
     public void writeToFile(String text){
     
-        try (FileOutputStream fos = new FileOutputStream("resources\\player" + ID + ".txt", true)) {
+        try (FileOutputStream fos = new FileOutputStream("resources\\player" + ID + "_output.txt", true)) {
             fos.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
             fos.write(text.getBytes(StandardCharsets.UTF_8));
             
@@ -133,8 +129,6 @@ public class Player implements Runnable{
 
         writeToFile("Player " + ID + " initial hand: " + handAsString);
         while (!won) {
-            turn++;
-
             //a game turn (picks up a card and deposits a card)
             cardToRemove = ChooseCardToRemove();
             newCard = addAndGet(cardToRemove);
