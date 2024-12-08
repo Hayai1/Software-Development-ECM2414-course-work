@@ -26,25 +26,11 @@ public class CardGame {
       scanner.close();
       for (int i = 0; i< players.length; i++) {
         Thread playerThread = new Thread(players[i]);
-        threads[i] = playerThread;
         playerThread.start();
         
       }
-      try {
-        threads[0].join();
-      }
-      catch (InterruptedException e){
-        System.out.println("nice");
-      }
-      for (Thread thread : threads){
-        try{
-          thread.join();
-          System.out.println("ඞ3");
-        }
-        catch (InterruptedException e){
-          System.out.println("ඞ");
-        }
-      }
+      
+      
       System.out.println("end of game");
     }
 
@@ -74,12 +60,13 @@ public class CardGame {
     public static Player[] createPlayers(int numberOfPlayers, Deck[] decks){
       players = new Player[numberOfPlayers];
       String[] finishedCheckingForWin = new String[numberOfPlayers];
+      boolean[] flag = new boolean[1];
       for (int i = 0; i < numberOfPlayers; i++){
         if(i == 0){
-          players[i] = new Player(i, decks[i], decks[decks.length-1],playerWin,finishedCheckingForWin);
+          players[i] = new Player(i, decks[i], decks[decks.length-1],playerWin,finishedCheckingForWin,flag);
         }
         else{
-          players[i] = new Player(i, decks[i], decks[i-1],playerWin,finishedCheckingForWin);
+          players[i] = new Player(i, decks[i], decks[i-1],playerWin,finishedCheckingForWin,flag);
         }
       }
       return players;
@@ -89,7 +76,7 @@ public class CardGame {
       // like createPlayer
       Deck[] decks = new Deck[numberOfdecks];
       for (int i=0; i < numberOfdecks; i++){
-        decks[i] = new Deck(i, 4);
+        decks[i] = new Deck(i, 5);
       }
       return decks;
     }
