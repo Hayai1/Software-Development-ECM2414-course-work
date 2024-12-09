@@ -1,8 +1,10 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.concurrent.CyclicBarrier;
@@ -11,26 +13,24 @@ public class CardGame {
     private static Player[] players;
     private static Deck[] decks;
     private static Pack pack;
-    private static StringBuffer playerWin; 
-    private static Scanner scanner = new Scanner(System.in);
+    private static StringBuffer playerWin;
     private static Thread[] threads;
 
-    public static void main(String[] args) throws InterruptedException {
+public static void main(String[] args) throws InterruptedException {
       playerWin = new StringBuffer("player ");
       int numberOfPlayers = getPlayerInput();
       threads = new Thread[numberOfPlayers];
-      
       decks = createDecks(numberOfPlayers);
-      System.out.println("decks made");
       players = createPlayers(numberOfPlayers, decks);
-      System.out.println("players made");
-      pack = createPack(players.length);
-      System.out.println("pack made");
+      try {
+        pack = createPack(players.length);
+      } catch (Exception e) {
+        System.out.println(e);
+      }
+
       int count = pack.getPack().size();
       dealCardsToPlayers(count);
-      dealCardsToDecks(count);
-      scanner.close();
-      
+      dealCardsToDecks(count,decks, pack);
       for (int i = 0; i< players.length; i++) {
         Thread playerThread = new Thread(players[i]);
         playerThread.start();
@@ -39,22 +39,22 @@ public class CardGame {
       for (Thread player : threads){
         player.join();
       }
-      writeDecksToFiles();
+      writeDecksToFiles("resources\\", decks);
     }
 
-    public static void writeDecksToFiles(){
+    public static void writeDecksToFiles(String path, Deck[] decks){
       for (Deck deck : decks){
         try {
-            File myObj = new File("resources\\deck" + deck.ID + "_output.txt");
+            File myObj = new File(path+"deck" + deck.ID + "_output.txt");
             if (myObj.createNewFile()) {
                 System.out.println("File created: " + myObj.getName());
             } 
             else {
                 //System.out.println("File already exists.");
-                FileWriter fileWriter = new FileWriter("resources\\deck" + deck.ID + "_output.txt");
+                FileWriter fileWriter = new FileWriter(path+"deck" + deck.ID + "_output.txt");
                 fileWriter.write("");
             }
-        try (FileOutputStream fos = new FileOutputStream("resources\\deck" + deck.ID + "_output.txt", true)) {
+        try (FileOutputStream fos = new FileOutputStream(path+"deck" + deck.ID + "_output.txt", true)) {
             String text = "deck" + deck.ID + " contents: " + deck.getCard().getValue() + " " + deck.getCard().getValue() + " " + deck.getCard().getValue() + " " + deck.getCard().getValue();  
             fos.write(text.getBytes(StandardCharsets.UTF_8));
             
@@ -70,8 +70,8 @@ public class CardGame {
       }
   }
 
-
-    public static int getPlayerInput(){
+  public static int getPlayerInput(){
+      Scanner scanner = new Scanner(System.in);
       System.out.println("Please enter the number of players:");
       boolean validNumberOfPlayers = false;
       int numberOfPlayers = 0;
@@ -125,14 +125,16 @@ public class CardGame {
       return valid;
     }
 
-    public static Pack createPack(int numberOfPlayers){
+    public static Pack createPack(int numberOfPlayers) throws IOException {
       // at least part of this needs to be separated out into a method to check if a pack is valid
       // and then the other part needs to create the pack
+      BufferedReader scanner2 = new BufferedReader(new InputStreamReader(System.in));
       System.out.println("Please enter location of pack to load");
       boolean validPath = false;
       String packPath = "";
       while (!validPath){
-        packPath = scanner.nextLine();
+        
+        packPath=scanner2.readLine();
         try{
           pack = new Pack(packPath);
           if (validPack(numberOfPlayers, pack)){
@@ -146,13 +148,13 @@ public class CardGame {
           continue;
         }
       }
+      scanner2.close();
       return pack;
     }
 
   
 
     public static void dealCardsToPlayers(int count){
-      
       for (int i=0; i < 4; i++){
         for (Player player : players) {
           player.addCard(pack.getCard());
@@ -161,7 +163,7 @@ public class CardGame {
     }
 
     
-    public static void dealCardsToDecks(int count){
+    public static void dealCardsToDecks(int count, Deck[] decks, Pack pack){
       for (int i=0; i < 4; i++){
         for (Deck deck : decks) {
           deck.addCard(pack.getCard());

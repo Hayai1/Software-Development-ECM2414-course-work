@@ -15,10 +15,9 @@ public class DeckTest {
         testDeck = new Deck(1, 4);
         assertEquals(1, testDeck.getID());
     }
-
-   
-
-
+  
+    
+    
     @Test
     public void addAndRemoveCardTest(){
         testDeck = new Deck(1, 4);
@@ -34,13 +33,15 @@ public class DeckTest {
         testDeck.addCard(card3);
         testDeck.addCard(card4);
 
+
         assertEquals(card1,testDeck.getCard());
         assertEquals(card2,testDeck.getCard());
         assertEquals(card3,testDeck.getCard());
         assertEquals(card4,testDeck.getCard());
+
     }
 
-     @Test
+    @Test
     public void countTest(){
         testDeck = new Deck(1, 4);
         Card card1 = new Card(0);

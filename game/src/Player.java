@@ -98,9 +98,18 @@ public class Player implements Runnable{
     }
 
     public void writeToFile(String text){
-    
+        
+        File file = new File("resources\\player" + ID + "_output.txt");
+        boolean start = false;
+        // Check if the file exists and is not a directory
+        if (file.exists() && file.isFile() && file.length() == 0) {
+            start = true;
+        }
+
         try (FileOutputStream fos = new FileOutputStream("resources\\player" + ID + "_output.txt", true)) {
-            fos.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+            if (!start){
+                fos.write(System.lineSeparator().getBytes(StandardCharsets.UTF_8));
+            }
             fos.write(text.getBytes(StandardCharsets.UTF_8));
             
         }
